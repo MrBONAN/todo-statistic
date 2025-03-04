@@ -11,45 +11,54 @@ function getFiles() {
     return filePaths.map(path => readFile(path));
 }
 
-function extractTODO(){
+function extractTODO() {
     let comments = [];
     for (const fileContent of files) {
         const lines = fileContent.split('\n');
         for (const line of lines) {
-            if (line.includes("// TODO")){
+            if (line.includes("// TODO")) {
                 comments.push(line.split("// TODO")[1].trim());
-            };
+            }
+            ;
         }
     }
     return comments;
 }
 
-function exctractImportant(comments){
+function exctractImportant(comments) {
     let important = [];
-    for (const comment of comments){
-        if (comment.includes("!")){
+    for (const comment of comments) {
+        if (comment.includes("!")) {
             important.push(comment);
         }
     }
     return important;
 }
 
+function filterByUser(user, comments) {
+    const userLowerCase = user.toLowerCase();
+    return comments.filter((comment) => comment.toLowerCase().startsWith(userLowerCase + ';'));
+}
+
 
 function processCommand(command) {
-    switch (command) {
+    let [commandName, ...args] = command.split(' ');
+    const comments = extractTODO()
+    switch (commandName) {
         case 'exit':
             process.exit(0);
             break;
         case 'show':
-            console.log(extractTODO());
+            console.log(comments);
             break;
         case 'important':
-            console.log(exctractImportant(extractTODO()))
+            console.log(exctractImportant(comments));
+            break;
+        case 'user':
+            console.log(filterByUser(args[0], comments));
             break;
         default:
             console.log('wrong command');
             break;
     }
 }
-
-// TODO you can do it!
