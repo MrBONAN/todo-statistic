@@ -43,6 +43,9 @@ function processCommand(command) {
         case 'show':
             console.log(extractTODO());
             break;
+        case 'important':
+            console.log(exctractImportant(extractTODO()))
+            break;
         default:
             console.log('wrong command');
             break;
