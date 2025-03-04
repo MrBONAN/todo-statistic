@@ -19,7 +19,6 @@ function extractTODO() {
             if (line.includes("// TODO")) {
                 comments.push(line.split("// TODO")[1].trim());
             }
-            ;
         }
     }
     return comments;
@@ -40,6 +39,41 @@ function filterByUser(user, comments) {
     return comments.filter((comment) => comment.toLowerCase().startsWith(userLowerCase + ';'));
 }
 
+function filterByImportant(comments) {
+    return comments.sort((cmnt1, cmnt2) => cmnt2.split('!').length - cmnt1.split('!').length);
+}
+
+function sortComments(flag, comments) {
+    switch (flag) {
+        case 'importance':
+            return filterByImportant(comments);
+        case 'user':
+            return filterByUsers(comments);
+        case 'date':
+            return filterByDate(comments);
+    }
+}
+
+function filterByDate(comments) {
+    let arr = [];
+    for (const comment of comments) {
+        let date = new Date(comment.split(";")[1]);
+        arr.push({date, comment});
+    }
+    arr.sort((a, b) => b.date - a.date);
+    return arr.map(x => x.comment);
+}
+
+function filterByUsers(comments) {
+    let arr = [];
+    for (const comment of comments) {
+        let username = comment.split(";")[0].toLowerCase();
+        arr.push({username, comment});
+    }
+    arr.sort((a, b) => a.username.localeCompare(b.username));
+    return arr.map(x => x.comment);
+}
+
 
 function processCommand(command) {
     let [commandName, ...args] = command.split(' ');
@@ -56,6 +90,9 @@ function processCommand(command) {
             break;
         case 'user':
             console.log(filterByUser(args[0], comments));
+            break;
+        case 'sort':
+            console.log(sortComments(args[0], comments));
             break;
         default:
             console.log('wrong command');
