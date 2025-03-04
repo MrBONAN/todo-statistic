@@ -13,11 +13,12 @@ function getFiles() {
 
 function extractTODO() {
     let comments = [];
+    const todoConst = '//' + ' TODO';
     for (const fileContent of files) {
         const lines = fileContent.split('\n');
         for (const line of lines) {
-            if (line.includes("// TODO")) {
-                comments.push(line.split("// TODO")[1].trim());
+            if (line.includes(todoConst)) {
+                comments.push(line.split(todoConst)[1].trim());
             }
         }
     }
